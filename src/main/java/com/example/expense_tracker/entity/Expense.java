@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Getter
@@ -21,17 +23,23 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="description")
+    @Column(name="description",nullable=false, length =255)
     private String description;
 
-    @Column(name= "amount")
+    @Column(name= "amount", nullable = false)
     private BigDecimal amount;
 
-    @Column(name="date")
+    @Column(name="date", nullable = false)
     private LocalDate date;
 
-    @Column(name="category")
-    private String category;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @JoinTable(name= "expense_category",
+            joinColumns = @JoinColumn(name= "expense_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    //@Column(name="category", nullable = false, length = 50)
+    private Set<Category> categories = new HashSet<>();
+
 
 
 }
